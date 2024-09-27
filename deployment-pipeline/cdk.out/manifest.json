@@ -1,0 +1,173 @@
+{
+  "version": "35.0.0",
+  "artifacts": {
+    "DeploymentPipelineStack.assets": {
+      "type": "cdk:asset-manifest",
+      "properties": {
+        "file": "DeploymentPipelineStack.assets.json",
+        "requiresBootstrapStackVersion": 6,
+        "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version"
+      }
+    },
+    "DeploymentPipelineStack": {
+      "type": "aws:cloudformation:stack",
+      "environment": "aws://unknown-account/unknown-region",
+      "properties": {
+        "templateFile": "DeploymentPipelineStack.template.json",
+        "terminationProtection": false,
+        "validateOnSynth": false,
+        "assumeRoleArn": "arn:${AWS::Partition}:iam::${AWS::AccountId}:role/cdk-hnb659fds-deploy-role-${AWS::AccountId}-${AWS::Region}",
+        "cloudFormationExecutionRoleArn": "arn:${AWS::Partition}:iam::${AWS::AccountId}:role/cdk-hnb659fds-cfn-exec-role-${AWS::AccountId}-${AWS::Region}",
+        "stackTemplateAssetObjectUrl": "s3://cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}/599d9441b205620e2ad8dff841dab864f2cb13982d8b5d43d3903cdda8526f68.json",
+        "requiresBootstrapStackVersion": 6,
+        "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version",
+        "additionalDependencies": [
+          "DeploymentPipelineStack.assets"
+        ],
+        "lookupRole": {
+          "arn": "arn:${AWS::Partition}:iam::${AWS::AccountId}:role/cdk-hnb659fds-lookup-role-${AWS::AccountId}-${AWS::Region}",
+          "requiresBootstrapStackVersion": 8,
+          "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version"
+        }
+      },
+      "dependencies": [
+        "DeploymentPipelineStack.assets"
+      ],
+      "metadata": {
+        "/DeploymentPipelineStack/ArtifactBucket/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "ArtifactBucket7410C9EF"
+          }
+        ],
+        "/DeploymentPipelineStack/DeployPipeline/Role/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "DeployPipelineRole3AA0C2AF"
+          }
+        ],
+        "/DeploymentPipelineStack/DeployPipeline/Role/DefaultPolicy/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "DeployPipelineRoleDefaultPolicy2F2D6796"
+          }
+        ],
+        "/DeploymentPipelineStack/DeployPipeline/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "DeployPipeline361861B6"
+          }
+        ],
+        "/DeploymentPipelineStack/DeployPipeline/Source/SoruceBackend/WebhookResource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "DeployPipelineSourceSoruceBackendWebhookResource629F61F4"
+          }
+        ],
+        "/DeploymentPipelineStack/DeployPipeline/DeployBackend/DeployBackend/CodePipelineActionRole/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "DeployPipelineDeployBackendCodePipelineActionRole62F987BB"
+          }
+        ],
+        "/DeploymentPipelineStack/DeployPipeline/DeployBackend/DeployBackend/CodePipelineActionRole/DefaultPolicy/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "DeployPipelineDeployBackendCodePipelineActionRoleDefaultPolicy4BB90B4C"
+          }
+        ],
+        "/DeploymentPipelineStack/DeployPipeline/DeployFrontend/DeployFrontend/CodePipelineActionRole/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "DeployPipelineDeployFrontendCodePipelineActionRole8639DFC3"
+          }
+        ],
+        "/DeploymentPipelineStack/DeployPipeline/DeployFrontend/DeployFrontend/CodePipelineActionRole/DefaultPolicy/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "DeployPipelineDeployFrontendCodePipelineActionRoleDefaultPolicy2CDCC55B"
+          }
+        ],
+        "/DeploymentPipelineStack/DeployBackendConstruct/CodeBuildRole/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "DeployBackendConstructCodeBuildRoleDCA94054"
+          }
+        ],
+        "/DeploymentPipelineStack/DeployBackendConstruct/CodeBuildRole/DefaultPolicy/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "DeployBackendConstructCodeBuildRoleDefaultPolicyDE2D244E"
+          }
+        ],
+        "/DeploymentPipelineStack/DeployBackendConstruct/IAMPolicy/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "DeployBackendConstructIAMPolicy6A220CEF"
+          }
+        ],
+        "/DeploymentPipelineStack/DeployBackendConstruct/CodeBuildProject/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "DeployBackendConstructCodeBuildProject0FF1D23A"
+          }
+        ],
+        "/DeploymentPipelineStack/DeployFrontendConstruct/CodeBuildRole/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "DeployFrontendConstructCodeBuildRoleECCF7E87"
+          }
+        ],
+        "/DeploymentPipelineStack/DeployFrontendConstruct/CodeBuildRole/DefaultPolicy/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "DeployFrontendConstructCodeBuildRoleDefaultPolicyCB8D39B4"
+          }
+        ],
+        "/DeploymentPipelineStack/DeployFrontendConstruct/IAMPolicy/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "DeployFrontendConstructIAMPolicyAF085E2E"
+          }
+        ],
+        "/DeploymentPipelineStack/DeployFrontendConstruct/CodeBuildProject/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "DeployFrontendConstructCodeBuildProjectF5EB279F"
+          }
+        ],
+        "/DeploymentPipelineStack/CDKMetadata/Default": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CDKMetadata"
+          }
+        ],
+        "/DeploymentPipelineStack/CDKMetadata/Condition": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CDKMetadataAvailable"
+          }
+        ],
+        "/DeploymentPipelineStack/BootstrapVersion": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "BootstrapVersion"
+          }
+        ],
+        "/DeploymentPipelineStack/CheckBootstrapVersion": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CheckBootstrapVersion"
+          }
+        ]
+      },
+      "displayName": "DeploymentPipelineStack"
+    },
+    "Tree": {
+      "type": "cdk:tree",
+      "properties": {
+        "file": "tree.json"
+      }
+    }
+  }
+}

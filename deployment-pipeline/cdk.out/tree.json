@@ -1,0 +1,1303 @@
+{
+  "version": "tree-0.1",
+  "tree": {
+    "id": "App",
+    "path": "",
+    "children": {
+      "DeploymentPipelineStack": {
+        "id": "DeploymentPipelineStack",
+        "path": "DeploymentPipelineStack",
+        "children": {
+          "ArtifactBucket": {
+            "id": "ArtifactBucket",
+            "path": "DeploymentPipelineStack/ArtifactBucket",
+            "children": {
+              "Resource": {
+                "id": "Resource",
+                "path": "DeploymentPipelineStack/ArtifactBucket/Resource",
+                "attributes": {
+                  "aws:cdk:cloudformation:type": "AWS::S3::Bucket",
+                  "aws:cdk:cloudformation:props": {}
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_s3.CfnBucket",
+                  "version": "2.110.1"
+                }
+              }
+            },
+            "constructInfo": {
+              "fqn": "aws-cdk-lib.aws_s3.Bucket",
+              "version": "2.110.1"
+            }
+          },
+          "Secret": {
+            "id": "Secret",
+            "path": "DeploymentPipelineStack/Secret",
+            "constructInfo": {
+              "fqn": "aws-cdk-lib.Resource",
+              "version": "2.110.1"
+            }
+          },
+          "DeployPipeline": {
+            "id": "DeployPipeline",
+            "path": "DeploymentPipelineStack/DeployPipeline",
+            "children": {
+              "Role": {
+                "id": "Role",
+                "path": "DeploymentPipelineStack/DeployPipeline/Role",
+                "children": {
+                  "ImportRole": {
+                    "id": "ImportRole",
+                    "path": "DeploymentPipelineStack/DeployPipeline/Role/ImportRole",
+                    "constructInfo": {
+                      "fqn": "aws-cdk-lib.Resource",
+                      "version": "2.110.1"
+                    }
+                  },
+                  "Resource": {
+                    "id": "Resource",
+                    "path": "DeploymentPipelineStack/DeployPipeline/Role/Resource",
+                    "attributes": {
+                      "aws:cdk:cloudformation:type": "AWS::IAM::Role",
+                      "aws:cdk:cloudformation:props": {
+                        "assumeRolePolicyDocument": {
+                          "Statement": [
+                            {
+                              "Action": "sts:AssumeRole",
+                              "Effect": "Allow",
+                              "Principal": {
+                                "Service": "codepipeline.amazonaws.com"
+                              }
+                            }
+                          ],
+                          "Version": "2012-10-17"
+                        }
+                      }
+                    },
+                    "constructInfo": {
+                      "fqn": "aws-cdk-lib.aws_iam.CfnRole",
+                      "version": "2.110.1"
+                    }
+                  },
+                  "DefaultPolicy": {
+                    "id": "DefaultPolicy",
+                    "path": "DeploymentPipelineStack/DeployPipeline/Role/DefaultPolicy",
+                    "children": {
+                      "Resource": {
+                        "id": "Resource",
+                        "path": "DeploymentPipelineStack/DeployPipeline/Role/DefaultPolicy/Resource",
+                        "attributes": {
+                          "aws:cdk:cloudformation:type": "AWS::IAM::Policy",
+                          "aws:cdk:cloudformation:props": {
+                            "policyDocument": {
+                              "Statement": [
+                                {
+                                  "Action": [
+                                    "s3:Abort*",
+                                    "s3:DeleteObject*",
+                                    "s3:GetBucket*",
+                                    "s3:GetObject*",
+                                    "s3:List*",
+                                    "s3:PutObject",
+                                    "s3:PutObjectLegalHold",
+                                    "s3:PutObjectRetention",
+                                    "s3:PutObjectTagging",
+                                    "s3:PutObjectVersionTagging"
+                                  ],
+                                  "Effect": "Allow",
+                                  "Resource": [
+                                    {
+                                      "Fn::GetAtt": [
+                                        "ArtifactBucket7410C9EF",
+                                        "Arn"
+                                      ]
+                                    },
+                                    {
+                                      "Fn::Join": [
+                                        "",
+                                        [
+                                          {
+                                            "Fn::GetAtt": [
+                                              "ArtifactBucket7410C9EF",
+                                              "Arn"
+                                            ]
+                                          },
+                                          "/*"
+                                        ]
+                                      ]
+                                    }
+                                  ]
+                                },
+                                {
+                                  "Action": "sts:AssumeRole",
+                                  "Effect": "Allow",
+                                  "Resource": [
+                                    {
+                                      "Fn::GetAtt": [
+                                        "DeployPipelineDeployBackendCodePipelineActionRole62F987BB",
+                                        "Arn"
+                                      ]
+                                    },
+                                    {
+                                      "Fn::GetAtt": [
+                                        "DeployPipelineDeployFrontendCodePipelineActionRole8639DFC3",
+                                        "Arn"
+                                      ]
+                                    }
+                                  ]
+                                }
+                              ],
+                              "Version": "2012-10-17"
+                            },
+                            "policyName": "DeployPipelineRoleDefaultPolicy2F2D6796",
+                            "roles": [
+                              {
+                                "Ref": "DeployPipelineRole3AA0C2AF"
+                              }
+                            ]
+                          }
+                        },
+                        "constructInfo": {
+                          "fqn": "aws-cdk-lib.aws_iam.CfnPolicy",
+                          "version": "2.110.1"
+                        }
+                      }
+                    },
+                    "constructInfo": {
+                      "fqn": "aws-cdk-lib.aws_iam.Policy",
+                      "version": "2.110.1"
+                    }
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_iam.Role",
+                  "version": "2.110.1"
+                }
+              },
+              "Resource": {
+                "id": "Resource",
+                "path": "DeploymentPipelineStack/DeployPipeline/Resource",
+                "attributes": {
+                  "aws:cdk:cloudformation:type": "AWS::CodePipeline::Pipeline",
+                  "aws:cdk:cloudformation:props": {
+                    "artifactStore": {
+                      "type": "S3",
+                      "location": {
+                        "Ref": "ArtifactBucket7410C9EF"
+                      }
+                    },
+                    "name": "Deploy-Pipeline",
+                    "roleArn": {
+                      "Fn::GetAtt": [
+                        "DeployPipelineRole3AA0C2AF",
+                        "Arn"
+                      ]
+                    },
+                    "stages": [
+                      {
+                        "name": "Source",
+                        "actions": [
+                          {
+                            "name": "SoruceBackend",
+                            "outputArtifacts": [
+                              {
+                                "name": "Artifact_Source_SoruceBackend"
+                              }
+                            ],
+                            "actionTypeId": {
+                              "category": "Source",
+                              "version": "1",
+                              "owner": "ThirdParty",
+                              "provider": "GitHub"
+                            },
+                            "configuration": {
+                              "Owner": "PredictIf",
+                              "Repo": "bedrock-website-generator",
+                              "Branch": "main",
+                              "OAuthToken": "{{resolve:secretsmanager:arn:aws:secretsmanager:us-east-1:221082206129:secret:website-generator-oauth-token-2fdCfT:SecretString:::}}",
+                              "PollForSourceChanges": false
+                            },
+                            "runOrder": 1
+                          }
+                        ]
+                      },
+                      {
+                        "name": "DeployBackend",
+                        "actions": [
+                          {
+                            "name": "DeployBackend",
+                            "inputArtifacts": [
+                              {
+                                "name": "Artifact_Source_SoruceBackend"
+                              }
+                            ],
+                            "actionTypeId": {
+                              "category": "Build",
+                              "version": "1",
+                              "owner": "AWS",
+                              "provider": "CodeBuild"
+                            },
+                            "configuration": {
+                              "ProjectName": {
+                                "Ref": "DeployBackendConstructCodeBuildProject0FF1D23A"
+                              }
+                            },
+                            "runOrder": 1,
+                            "roleArn": {
+                              "Fn::GetAtt": [
+                                "DeployPipelineDeployBackendCodePipelineActionRole62F987BB",
+                                "Arn"
+                              ]
+                            }
+                          }
+                        ]
+                      },
+                      {
+                        "name": "DeployFrontend",
+                        "actions": [
+                          {
+                            "name": "DeployFrontend",
+                            "inputArtifacts": [
+                              {
+                                "name": "Artifact_Source_SoruceBackend"
+                              }
+                            ],
+                            "actionTypeId": {
+                              "category": "Build",
+                              "version": "1",
+                              "owner": "AWS",
+                              "provider": "CodeBuild"
+                            },
+                            "configuration": {
+                              "ProjectName": {
+                                "Ref": "DeployFrontendConstructCodeBuildProjectF5EB279F"
+                              }
+                            },
+                            "runOrder": 1,
+                            "roleArn": {
+                              "Fn::GetAtt": [
+                                "DeployPipelineDeployFrontendCodePipelineActionRole8639DFC3",
+                                "Arn"
+                              ]
+                            }
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_codepipeline.CfnPipeline",
+                  "version": "2.110.1"
+                }
+              },
+              "Source": {
+                "id": "Source",
+                "path": "DeploymentPipelineStack/DeployPipeline/Source",
+                "children": {
+                  "SoruceBackend": {
+                    "id": "SoruceBackend",
+                    "path": "DeploymentPipelineStack/DeployPipeline/Source/SoruceBackend",
+                    "children": {
+                      "WebhookResource": {
+                        "id": "WebhookResource",
+                        "path": "DeploymentPipelineStack/DeployPipeline/Source/SoruceBackend/WebhookResource",
+                        "attributes": {
+                          "aws:cdk:cloudformation:type": "AWS::CodePipeline::Webhook",
+                          "aws:cdk:cloudformation:props": {
+                            "authentication": "GITHUB_HMAC",
+                            "authenticationConfiguration": {
+                              "secretToken": "{{resolve:secretsmanager:arn:aws:secretsmanager:us-east-1:221082206129:secret:website-generator-oauth-token-2fdCfT:SecretString:::}}"
+                            },
+                            "filters": [
+                              {
+                                "jsonPath": "$.ref",
+                                "matchEquals": "refs/heads/{Branch}"
+                              }
+                            ],
+                            "registerWithThirdParty": true,
+                            "targetAction": "SoruceBackend",
+                            "targetPipeline": {
+                              "Ref": "DeployPipeline361861B6"
+                            },
+                            "targetPipelineVersion": 1
+                          }
+                        },
+                        "constructInfo": {
+                          "fqn": "aws-cdk-lib.aws_codepipeline.CfnWebhook",
+                          "version": "2.110.1"
+                        }
+                      }
+                    },
+                    "constructInfo": {
+                      "fqn": "constructs.Construct",
+                      "version": "10.0.0"
+                    }
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "constructs.Construct",
+                  "version": "10.0.0"
+                }
+              },
+              "DeployBackend": {
+                "id": "DeployBackend",
+                "path": "DeploymentPipelineStack/DeployPipeline/DeployBackend",
+                "children": {
+                  "DeployBackend": {
+                    "id": "DeployBackend",
+                    "path": "DeploymentPipelineStack/DeployPipeline/DeployBackend/DeployBackend",
+                    "children": {
+                      "CodePipelineActionRole": {
+                        "id": "CodePipelineActionRole",
+                        "path": "DeploymentPipelineStack/DeployPipeline/DeployBackend/DeployBackend/CodePipelineActionRole",
+                        "children": {
+                          "ImportCodePipelineActionRole": {
+                            "id": "ImportCodePipelineActionRole",
+                            "path": "DeploymentPipelineStack/DeployPipeline/DeployBackend/DeployBackend/CodePipelineActionRole/ImportCodePipelineActionRole",
+                            "constructInfo": {
+                              "fqn": "aws-cdk-lib.Resource",
+                              "version": "2.110.1"
+                            }
+                          },
+                          "Resource": {
+                            "id": "Resource",
+                            "path": "DeploymentPipelineStack/DeployPipeline/DeployBackend/DeployBackend/CodePipelineActionRole/Resource",
+                            "attributes": {
+                              "aws:cdk:cloudformation:type": "AWS::IAM::Role",
+                              "aws:cdk:cloudformation:props": {
+                                "assumeRolePolicyDocument": {
+                                  "Statement": [
+                                    {
+                                      "Action": "sts:AssumeRole",
+                                      "Effect": "Allow",
+                                      "Principal": {
+                                        "AWS": {
+                                          "Fn::Join": [
+                                            "",
+                                            [
+                                              "arn:",
+                                              {
+                                                "Ref": "AWS::Partition"
+                                              },
+                                              ":iam::",
+                                              {
+                                                "Ref": "AWS::AccountId"
+                                              },
+                                              ":root"
+                                            ]
+                                          ]
+                                        }
+                                      }
+                                    }
+                                  ],
+                                  "Version": "2012-10-17"
+                                }
+                              }
+                            },
+                            "constructInfo": {
+                              "fqn": "aws-cdk-lib.aws_iam.CfnRole",
+                              "version": "2.110.1"
+                            }
+                          },
+                          "DefaultPolicy": {
+                            "id": "DefaultPolicy",
+                            "path": "DeploymentPipelineStack/DeployPipeline/DeployBackend/DeployBackend/CodePipelineActionRole/DefaultPolicy",
+                            "children": {
+                              "Resource": {
+                                "id": "Resource",
+                                "path": "DeploymentPipelineStack/DeployPipeline/DeployBackend/DeployBackend/CodePipelineActionRole/DefaultPolicy/Resource",
+                                "attributes": {
+                                  "aws:cdk:cloudformation:type": "AWS::IAM::Policy",
+                                  "aws:cdk:cloudformation:props": {
+                                    "policyDocument": {
+                                      "Statement": [
+                                        {
+                                          "Action": [
+                                            "codebuild:BatchGetBuilds",
+                                            "codebuild:StartBuild",
+                                            "codebuild:StopBuild"
+                                          ],
+                                          "Effect": "Allow",
+                                          "Resource": {
+                                            "Fn::GetAtt": [
+                                              "DeployBackendConstructCodeBuildProject0FF1D23A",
+                                              "Arn"
+                                            ]
+                                          }
+                                        }
+                                      ],
+                                      "Version": "2012-10-17"
+                                    },
+                                    "policyName": "DeployPipelineDeployBackendCodePipelineActionRoleDefaultPolicy4BB90B4C",
+                                    "roles": [
+                                      {
+                                        "Ref": "DeployPipelineDeployBackendCodePipelineActionRole62F987BB"
+                                      }
+                                    ]
+                                  }
+                                },
+                                "constructInfo": {
+                                  "fqn": "aws-cdk-lib.aws_iam.CfnPolicy",
+                                  "version": "2.110.1"
+                                }
+                              }
+                            },
+                            "constructInfo": {
+                              "fqn": "aws-cdk-lib.aws_iam.Policy",
+                              "version": "2.110.1"
+                            }
+                          }
+                        },
+                        "constructInfo": {
+                          "fqn": "aws-cdk-lib.aws_iam.Role",
+                          "version": "2.110.1"
+                        }
+                      }
+                    },
+                    "constructInfo": {
+                      "fqn": "constructs.Construct",
+                      "version": "10.0.0"
+                    }
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "constructs.Construct",
+                  "version": "10.0.0"
+                }
+              },
+              "DeployFrontend": {
+                "id": "DeployFrontend",
+                "path": "DeploymentPipelineStack/DeployPipeline/DeployFrontend",
+                "children": {
+                  "DeployFrontend": {
+                    "id": "DeployFrontend",
+                    "path": "DeploymentPipelineStack/DeployPipeline/DeployFrontend/DeployFrontend",
+                    "children": {
+                      "CodePipelineActionRole": {
+                        "id": "CodePipelineActionRole",
+                        "path": "DeploymentPipelineStack/DeployPipeline/DeployFrontend/DeployFrontend/CodePipelineActionRole",
+                        "children": {
+                          "ImportCodePipelineActionRole": {
+                            "id": "ImportCodePipelineActionRole",
+                            "path": "DeploymentPipelineStack/DeployPipeline/DeployFrontend/DeployFrontend/CodePipelineActionRole/ImportCodePipelineActionRole",
+                            "constructInfo": {
+                              "fqn": "aws-cdk-lib.Resource",
+                              "version": "2.110.1"
+                            }
+                          },
+                          "Resource": {
+                            "id": "Resource",
+                            "path": "DeploymentPipelineStack/DeployPipeline/DeployFrontend/DeployFrontend/CodePipelineActionRole/Resource",
+                            "attributes": {
+                              "aws:cdk:cloudformation:type": "AWS::IAM::Role",
+                              "aws:cdk:cloudformation:props": {
+                                "assumeRolePolicyDocument": {
+                                  "Statement": [
+                                    {
+                                      "Action": "sts:AssumeRole",
+                                      "Effect": "Allow",
+                                      "Principal": {
+                                        "AWS": {
+                                          "Fn::Join": [
+                                            "",
+                                            [
+                                              "arn:",
+                                              {
+                                                "Ref": "AWS::Partition"
+                                              },
+                                              ":iam::",
+                                              {
+                                                "Ref": "AWS::AccountId"
+                                              },
+                                              ":root"
+                                            ]
+                                          ]
+                                        }
+                                      }
+                                    }
+                                  ],
+                                  "Version": "2012-10-17"
+                                }
+                              }
+                            },
+                            "constructInfo": {
+                              "fqn": "aws-cdk-lib.aws_iam.CfnRole",
+                              "version": "2.110.1"
+                            }
+                          },
+                          "DefaultPolicy": {
+                            "id": "DefaultPolicy",
+                            "path": "DeploymentPipelineStack/DeployPipeline/DeployFrontend/DeployFrontend/CodePipelineActionRole/DefaultPolicy",
+                            "children": {
+                              "Resource": {
+                                "id": "Resource",
+                                "path": "DeploymentPipelineStack/DeployPipeline/DeployFrontend/DeployFrontend/CodePipelineActionRole/DefaultPolicy/Resource",
+                                "attributes": {
+                                  "aws:cdk:cloudformation:type": "AWS::IAM::Policy",
+                                  "aws:cdk:cloudformation:props": {
+                                    "policyDocument": {
+                                      "Statement": [
+                                        {
+                                          "Action": [
+                                            "codebuild:BatchGetBuilds",
+                                            "codebuild:StartBuild",
+                                            "codebuild:StopBuild"
+                                          ],
+                                          "Effect": "Allow",
+                                          "Resource": {
+                                            "Fn::GetAtt": [
+                                              "DeployFrontendConstructCodeBuildProjectF5EB279F",
+                                              "Arn"
+                                            ]
+                                          }
+                                        }
+                                      ],
+                                      "Version": "2012-10-17"
+                                    },
+                                    "policyName": "DeployPipelineDeployFrontendCodePipelineActionRoleDefaultPolicy2CDCC55B",
+                                    "roles": [
+                                      {
+                                        "Ref": "DeployPipelineDeployFrontendCodePipelineActionRole8639DFC3"
+                                      }
+                                    ]
+                                  }
+                                },
+                                "constructInfo": {
+                                  "fqn": "aws-cdk-lib.aws_iam.CfnPolicy",
+                                  "version": "2.110.1"
+                                }
+                              }
+                            },
+                            "constructInfo": {
+                              "fqn": "aws-cdk-lib.aws_iam.Policy",
+                              "version": "2.110.1"
+                            }
+                          }
+                        },
+                        "constructInfo": {
+                          "fqn": "aws-cdk-lib.aws_iam.Role",
+                          "version": "2.110.1"
+                        }
+                      }
+                    },
+                    "constructInfo": {
+                      "fqn": "constructs.Construct",
+                      "version": "10.0.0"
+                    }
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "constructs.Construct",
+                  "version": "10.0.0"
+                }
+              }
+            },
+            "constructInfo": {
+              "fqn": "aws-cdk-lib.aws_codepipeline.Pipeline",
+              "version": "2.110.1"
+            }
+          },
+          "DeployBackendConstruct": {
+            "id": "DeployBackendConstruct",
+            "path": "DeploymentPipelineStack/DeployBackendConstruct",
+            "children": {
+              "CodeBuildRole": {
+                "id": "CodeBuildRole",
+                "path": "DeploymentPipelineStack/DeployBackendConstruct/CodeBuildRole",
+                "children": {
+                  "ImportCodeBuildRole": {
+                    "id": "ImportCodeBuildRole",
+                    "path": "DeploymentPipelineStack/DeployBackendConstruct/CodeBuildRole/ImportCodeBuildRole",
+                    "constructInfo": {
+                      "fqn": "aws-cdk-lib.Resource",
+                      "version": "2.110.1"
+                    }
+                  },
+                  "Resource": {
+                    "id": "Resource",
+                    "path": "DeploymentPipelineStack/DeployBackendConstruct/CodeBuildRole/Resource",
+                    "attributes": {
+                      "aws:cdk:cloudformation:type": "AWS::IAM::Role",
+                      "aws:cdk:cloudformation:props": {
+                        "assumeRolePolicyDocument": {
+                          "Statement": [
+                            {
+                              "Action": "sts:AssumeRole",
+                              "Effect": "Allow",
+                              "Principal": {
+                                "Service": "codebuild.amazonaws.com"
+                              }
+                            }
+                          ],
+                          "Version": "2012-10-17"
+                        }
+                      }
+                    },
+                    "constructInfo": {
+                      "fqn": "aws-cdk-lib.aws_iam.CfnRole",
+                      "version": "2.110.1"
+                    }
+                  },
+                  "DefaultPolicy": {
+                    "id": "DefaultPolicy",
+                    "path": "DeploymentPipelineStack/DeployBackendConstruct/CodeBuildRole/DefaultPolicy",
+                    "children": {
+                      "Resource": {
+                        "id": "Resource",
+                        "path": "DeploymentPipelineStack/DeployBackendConstruct/CodeBuildRole/DefaultPolicy/Resource",
+                        "attributes": {
+                          "aws:cdk:cloudformation:type": "AWS::IAM::Policy",
+                          "aws:cdk:cloudformation:props": {
+                            "policyDocument": {
+                              "Statement": [
+                                {
+                                  "Action": [
+                                    "logs:CreateLogGroup",
+                                    "logs:CreateLogStream",
+                                    "logs:PutLogEvents"
+                                  ],
+                                  "Effect": "Allow",
+                                  "Resource": [
+                                    {
+                                      "Fn::Join": [
+                                        "",
+                                        [
+                                          "arn:",
+                                          {
+                                            "Ref": "AWS::Partition"
+                                          },
+                                          ":logs:",
+                                          {
+                                            "Ref": "AWS::Region"
+                                          },
+                                          ":",
+                                          {
+                                            "Ref": "AWS::AccountId"
+                                          },
+                                          ":log-group:/aws/codebuild/",
+                                          {
+                                            "Ref": "DeployBackendConstructCodeBuildProject0FF1D23A"
+                                          },
+                                          ":*"
+                                        ]
+                                      ]
+                                    },
+                                    {
+                                      "Fn::Join": [
+                                        "",
+                                        [
+                                          "arn:",
+                                          {
+                                            "Ref": "AWS::Partition"
+                                          },
+                                          ":logs:",
+                                          {
+                                            "Ref": "AWS::Region"
+                                          },
+                                          ":",
+                                          {
+                                            "Ref": "AWS::AccountId"
+                                          },
+                                          ":log-group:/aws/codebuild/",
+                                          {
+                                            "Ref": "DeployBackendConstructCodeBuildProject0FF1D23A"
+                                          }
+                                        ]
+                                      ]
+                                    }
+                                  ]
+                                },
+                                {
+                                  "Action": [
+                                    "codebuild:BatchPutCodeCoverages",
+                                    "codebuild:BatchPutTestCases",
+                                    "codebuild:CreateReport",
+                                    "codebuild:CreateReportGroup",
+                                    "codebuild:UpdateReport"
+                                  ],
+                                  "Effect": "Allow",
+                                  "Resource": {
+                                    "Fn::Join": [
+                                      "",
+                                      [
+                                        "arn:",
+                                        {
+                                          "Ref": "AWS::Partition"
+                                        },
+                                        ":codebuild:",
+                                        {
+                                          "Ref": "AWS::Region"
+                                        },
+                                        ":",
+                                        {
+                                          "Ref": "AWS::AccountId"
+                                        },
+                                        ":report-group/",
+                                        {
+                                          "Ref": "DeployBackendConstructCodeBuildProject0FF1D23A"
+                                        },
+                                        "-*"
+                                      ]
+                                    ]
+                                  }
+                                },
+                                {
+                                  "Action": [
+                                    "s3:GetBucket*",
+                                    "s3:GetObject*",
+                                    "s3:List*"
+                                  ],
+                                  "Effect": "Allow",
+                                  "Resource": [
+                                    {
+                                      "Fn::GetAtt": [
+                                        "ArtifactBucket7410C9EF",
+                                        "Arn"
+                                      ]
+                                    },
+                                    {
+                                      "Fn::Join": [
+                                        "",
+                                        [
+                                          {
+                                            "Fn::GetAtt": [
+                                              "ArtifactBucket7410C9EF",
+                                              "Arn"
+                                            ]
+                                          },
+                                          "/*"
+                                        ]
+                                      ]
+                                    }
+                                  ]
+                                }
+                              ],
+                              "Version": "2012-10-17"
+                            },
+                            "policyName": "DeployBackendConstructCodeBuildRoleDefaultPolicyDE2D244E",
+                            "roles": [
+                              {
+                                "Ref": "DeployBackendConstructCodeBuildRoleDCA94054"
+                              }
+                            ]
+                          }
+                        },
+                        "constructInfo": {
+                          "fqn": "aws-cdk-lib.aws_iam.CfnPolicy",
+                          "version": "2.110.1"
+                        }
+                      }
+                    },
+                    "constructInfo": {
+                      "fqn": "aws-cdk-lib.aws_iam.Policy",
+                      "version": "2.110.1"
+                    }
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_iam.Role",
+                  "version": "2.110.1"
+                }
+              },
+              "IAMPolicy": {
+                "id": "IAMPolicy",
+                "path": "DeploymentPipelineStack/DeployBackendConstruct/IAMPolicy",
+                "children": {
+                  "Resource": {
+                    "id": "Resource",
+                    "path": "DeploymentPipelineStack/DeployBackendConstruct/IAMPolicy/Resource",
+                    "attributes": {
+                      "aws:cdk:cloudformation:type": "AWS::IAM::Policy",
+                      "aws:cdk:cloudformation:props": {
+                        "policyDocument": {
+                          "Statement": [
+                            {
+                              "Action": [
+                                "cloudformation:CreateStack",
+                                "cloudformation:DeleteStack",
+                                "cloudformation:DescribeChangeSet",
+                                "cloudformation:DescribeStackEvents",
+                                "cloudformation:DescribeStacks",
+                                "cloudformation:ExecuteChangeSet",
+                                "cloudformation:UpdateStack"
+                              ],
+                              "Effect": "Allow",
+                              "Resource": "arn:aws:cloudformation:us-east-1:221082206129:stack/CDKToolkit/*",
+                              "Sid": "deployPolicies"
+                            },
+                            {
+                              "Action": "sts:AssumeRole",
+                              "Effect": "Allow",
+                              "Resource": [
+                                "arn:aws:iam::221082206129:role/cdk-*-container-assets-221082206129-us-east-1",
+                                "arn:aws:iam::221082206129:role/cdk-*-deploy-role-221082206129-us-east-1",
+                                "arn:aws:iam::221082206129:role/cdk-*-file-publishing-role-221082206129-us-east-1",
+                                "arn:aws:iam::221082206129:role/cdk-*-image-publishing-role-221082206129-us-east-1",
+                                "arn:aws:iam::221082206129:role/cdk-*-lookup-role-221082206129-us-east-1"
+                              ],
+                              "Sid": "assumeRole"
+                            }
+                          ],
+                          "Version": "2012-10-17"
+                        },
+                        "policyName": "DeployBackendConstructIAMPolicy6A220CEF",
+                        "roles": [
+                          {
+                            "Ref": "DeployBackendConstructCodeBuildRoleDCA94054"
+                          }
+                        ]
+                      }
+                    },
+                    "constructInfo": {
+                      "fqn": "aws-cdk-lib.aws_iam.CfnPolicy",
+                      "version": "2.110.1"
+                    }
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_iam.Policy",
+                  "version": "2.110.1"
+                }
+              },
+              "CodeBuildProject": {
+                "id": "CodeBuildProject",
+                "path": "DeploymentPipelineStack/DeployBackendConstruct/CodeBuildProject",
+                "children": {
+                  "Resource": {
+                    "id": "Resource",
+                    "path": "DeploymentPipelineStack/DeployBackendConstruct/CodeBuildProject/Resource",
+                    "attributes": {
+                      "aws:cdk:cloudformation:type": "AWS::CodeBuild::Project",
+                      "aws:cdk:cloudformation:props": {
+                        "artifacts": {
+                          "type": "CODEPIPELINE"
+                        },
+                        "cache": {
+                          "type": "LOCAL",
+                          "modes": [
+                            "LOCAL_CUSTOM_CACHE"
+                          ]
+                        },
+                        "description": "Deploys the Stack",
+                        "encryptionKey": "alias/aws/s3",
+                        "environment": {
+                          "type": "LINUX_CONTAINER",
+                          "image": "aws/codebuild/standard:7.0",
+                          "imagePullCredentialsType": "CODEBUILD",
+                          "privilegedMode": false,
+                          "computeType": "BUILD_GENERAL1_SMALL"
+                        },
+                        "serviceRole": {
+                          "Fn::GetAtt": [
+                            "DeployBackendConstructCodeBuildRoleDCA94054",
+                            "Arn"
+                          ]
+                        },
+                        "source": {
+                          "type": "CODEPIPELINE",
+                          "buildSpec": "{\n  \"version\": \"0.2\",\n  \"phases\": {\n    \"install\": {\n      \"runtimeVersions\": {\n        \"python\": \"3.11\"\n      },\n      \"commands\": [\n        \"cd backend\",\n        \"npm i\"\n      ]\n    },\n    \"build\": {\n      \"commands\": [\n        \"ls -l\",\n        \"npm run cdk deploy \\\"*\\\"\"\n      ]\n    }\n  },\n  \"artifacts\": {\n    \"files\": [\n      \"**/*\"\n    ]\n  },\n  \"cache\": {\n    \"paths\": [\n      \"node_modules/**/*\"\n    ]\n  }\n}"
+                        }
+                      }
+                    },
+                    "constructInfo": {
+                      "fqn": "aws-cdk-lib.aws_codebuild.CfnProject",
+                      "version": "2.110.1"
+                    }
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_codebuild.PipelineProject",
+                  "version": "2.110.1"
+                }
+              }
+            },
+            "constructInfo": {
+              "fqn": "constructs.Construct",
+              "version": "10.0.0"
+            }
+          },
+          "DeployFrontendConstruct": {
+            "id": "DeployFrontendConstruct",
+            "path": "DeploymentPipelineStack/DeployFrontendConstruct",
+            "children": {
+              "CodeBuildRole": {
+                "id": "CodeBuildRole",
+                "path": "DeploymentPipelineStack/DeployFrontendConstruct/CodeBuildRole",
+                "children": {
+                  "ImportCodeBuildRole": {
+                    "id": "ImportCodeBuildRole",
+                    "path": "DeploymentPipelineStack/DeployFrontendConstruct/CodeBuildRole/ImportCodeBuildRole",
+                    "constructInfo": {
+                      "fqn": "aws-cdk-lib.Resource",
+                      "version": "2.110.1"
+                    }
+                  },
+                  "Resource": {
+                    "id": "Resource",
+                    "path": "DeploymentPipelineStack/DeployFrontendConstruct/CodeBuildRole/Resource",
+                    "attributes": {
+                      "aws:cdk:cloudformation:type": "AWS::IAM::Role",
+                      "aws:cdk:cloudformation:props": {
+                        "assumeRolePolicyDocument": {
+                          "Statement": [
+                            {
+                              "Action": "sts:AssumeRole",
+                              "Effect": "Allow",
+                              "Principal": {
+                                "Service": "codebuild.amazonaws.com"
+                              }
+                            }
+                          ],
+                          "Version": "2012-10-17"
+                        }
+                      }
+                    },
+                    "constructInfo": {
+                      "fqn": "aws-cdk-lib.aws_iam.CfnRole",
+                      "version": "2.110.1"
+                    }
+                  },
+                  "DefaultPolicy": {
+                    "id": "DefaultPolicy",
+                    "path": "DeploymentPipelineStack/DeployFrontendConstruct/CodeBuildRole/DefaultPolicy",
+                    "children": {
+                      "Resource": {
+                        "id": "Resource",
+                        "path": "DeploymentPipelineStack/DeployFrontendConstruct/CodeBuildRole/DefaultPolicy/Resource",
+                        "attributes": {
+                          "aws:cdk:cloudformation:type": "AWS::IAM::Policy",
+                          "aws:cdk:cloudformation:props": {
+                            "policyDocument": {
+                              "Statement": [
+                                {
+                                  "Action": [
+                                    "logs:CreateLogGroup",
+                                    "logs:CreateLogStream",
+                                    "logs:PutLogEvents"
+                                  ],
+                                  "Effect": "Allow",
+                                  "Resource": [
+                                    {
+                                      "Fn::Join": [
+                                        "",
+                                        [
+                                          "arn:",
+                                          {
+                                            "Ref": "AWS::Partition"
+                                          },
+                                          ":logs:",
+                                          {
+                                            "Ref": "AWS::Region"
+                                          },
+                                          ":",
+                                          {
+                                            "Ref": "AWS::AccountId"
+                                          },
+                                          ":log-group:/aws/codebuild/",
+                                          {
+                                            "Ref": "DeployFrontendConstructCodeBuildProjectF5EB279F"
+                                          },
+                                          ":*"
+                                        ]
+                                      ]
+                                    },
+                                    {
+                                      "Fn::Join": [
+                                        "",
+                                        [
+                                          "arn:",
+                                          {
+                                            "Ref": "AWS::Partition"
+                                          },
+                                          ":logs:",
+                                          {
+                                            "Ref": "AWS::Region"
+                                          },
+                                          ":",
+                                          {
+                                            "Ref": "AWS::AccountId"
+                                          },
+                                          ":log-group:/aws/codebuild/",
+                                          {
+                                            "Ref": "DeployFrontendConstructCodeBuildProjectF5EB279F"
+                                          }
+                                        ]
+                                      ]
+                                    }
+                                  ]
+                                },
+                                {
+                                  "Action": [
+                                    "codebuild:BatchPutCodeCoverages",
+                                    "codebuild:BatchPutTestCases",
+                                    "codebuild:CreateReport",
+                                    "codebuild:CreateReportGroup",
+                                    "codebuild:UpdateReport"
+                                  ],
+                                  "Effect": "Allow",
+                                  "Resource": {
+                                    "Fn::Join": [
+                                      "",
+                                      [
+                                        "arn:",
+                                        {
+                                          "Ref": "AWS::Partition"
+                                        },
+                                        ":codebuild:",
+                                        {
+                                          "Ref": "AWS::Region"
+                                        },
+                                        ":",
+                                        {
+                                          "Ref": "AWS::AccountId"
+                                        },
+                                        ":report-group/",
+                                        {
+                                          "Ref": "DeployFrontendConstructCodeBuildProjectF5EB279F"
+                                        },
+                                        "-*"
+                                      ]
+                                    ]
+                                  }
+                                },
+                                {
+                                  "Action": [
+                                    "s3:GetBucket*",
+                                    "s3:GetObject*",
+                                    "s3:List*"
+                                  ],
+                                  "Effect": "Allow",
+                                  "Resource": [
+                                    {
+                                      "Fn::GetAtt": [
+                                        "ArtifactBucket7410C9EF",
+                                        "Arn"
+                                      ]
+                                    },
+                                    {
+                                      "Fn::Join": [
+                                        "",
+                                        [
+                                          {
+                                            "Fn::GetAtt": [
+                                              "ArtifactBucket7410C9EF",
+                                              "Arn"
+                                            ]
+                                          },
+                                          "/*"
+                                        ]
+                                      ]
+                                    }
+                                  ]
+                                }
+                              ],
+                              "Version": "2012-10-17"
+                            },
+                            "policyName": "DeployFrontendConstructCodeBuildRoleDefaultPolicyCB8D39B4",
+                            "roles": [
+                              {
+                                "Ref": "DeployFrontendConstructCodeBuildRoleECCF7E87"
+                              }
+                            ]
+                          }
+                        },
+                        "constructInfo": {
+                          "fqn": "aws-cdk-lib.aws_iam.CfnPolicy",
+                          "version": "2.110.1"
+                        }
+                      }
+                    },
+                    "constructInfo": {
+                      "fqn": "aws-cdk-lib.aws_iam.Policy",
+                      "version": "2.110.1"
+                    }
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_iam.Role",
+                  "version": "2.110.1"
+                }
+              },
+              "IAMPolicy": {
+                "id": "IAMPolicy",
+                "path": "DeploymentPipelineStack/DeployFrontendConstruct/IAMPolicy",
+                "children": {
+                  "Resource": {
+                    "id": "Resource",
+                    "path": "DeploymentPipelineStack/DeployFrontendConstruct/IAMPolicy/Resource",
+                    "attributes": {
+                      "aws:cdk:cloudformation:type": "AWS::IAM::Policy",
+                      "aws:cdk:cloudformation:props": {
+                        "policyDocument": {
+                          "Statement": [
+                            {
+                              "Action": [
+                                "cloudformation:CreateStack",
+                                "cloudformation:DeleteStack",
+                                "cloudformation:DescribeChangeSet",
+                                "cloudformation:DescribeStackEvents",
+                                "cloudformation:DescribeStacks",
+                                "cloudformation:ExecuteChangeSet",
+                                "cloudformation:UpdateStack",
+                                "ssm:GetParameter"
+                              ],
+                              "Effect": "Allow",
+                              "Resource": [
+                                "arn:aws:cloudformation:us-east-1:221082206129:stack/CDKToolkit/*",
+                                "arn:aws:ssm::us-east-1:221082206129:parameter/apig/url/value"
+                              ],
+                              "Sid": "deployPolicies"
+                            },
+                            {
+                              "Action": "sts:AssumeRole",
+                              "Effect": "Allow",
+                              "Resource": [
+                                "arn:aws:iam::221082206129:role/cdk-*-deploy-role-221082206129-us-east-1",
+                                "arn:aws:iam::221082206129:role/cdk-*-file-publishing-role-221082206129-us-east-1",
+                                "arn:aws:iam::221082206129:role/cdk-*-lookup-role-221082206129-us-east-1"
+                              ],
+                              "Sid": "assumeRole"
+                            }
+                          ],
+                          "Version": "2012-10-17"
+                        },
+                        "policyName": "DeployFrontendConstructIAMPolicyAF085E2E",
+                        "roles": [
+                          {
+                            "Ref": "DeployFrontendConstructCodeBuildRoleECCF7E87"
+                          }
+                        ]
+                      }
+                    },
+                    "constructInfo": {
+                      "fqn": "aws-cdk-lib.aws_iam.CfnPolicy",
+                      "version": "2.110.1"
+                    }
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_iam.Policy",
+                  "version": "2.110.1"
+                }
+              },
+              "CodeBuildProject": {
+                "id": "CodeBuildProject",
+                "path": "DeploymentPipelineStack/DeployFrontendConstruct/CodeBuildProject",
+                "children": {
+                  "Resource": {
+                    "id": "Resource",
+                    "path": "DeploymentPipelineStack/DeployFrontendConstruct/CodeBuildProject/Resource",
+                    "attributes": {
+                      "aws:cdk:cloudformation:type": "AWS::CodeBuild::Project",
+                      "aws:cdk:cloudformation:props": {
+                        "artifacts": {
+                          "type": "CODEPIPELINE"
+                        },
+                        "cache": {
+                          "type": "LOCAL",
+                          "modes": [
+                            "LOCAL_CUSTOM_CACHE"
+                          ]
+                        },
+                        "description": "Deploys Frontend",
+                        "encryptionKey": "alias/aws/s3",
+                        "environment": {
+                          "type": "LINUX_CONTAINER",
+                          "image": "aws/codebuild/standard:7.0",
+                          "imagePullCredentialsType": "CODEBUILD",
+                          "privilegedMode": false,
+                          "computeType": "BUILD_GENERAL1_SMALL"
+                        },
+                        "serviceRole": {
+                          "Fn::GetAtt": [
+                            "DeployFrontendConstructCodeBuildRoleECCF7E87",
+                            "Arn"
+                          ]
+                        },
+                        "source": {
+                          "type": "CODEPIPELINE",
+                          "buildSpec": "{\n  \"version\": \"0.2\",\n  \"phases\": {\n    \"install\": {\n      \"runtimeVersions\": {\n        \"python\": \"3.11\"\n      },\n      \"commands\": [\n        \"cd frontend/frontend-infra\",\n        \"npm i\"\n      ]\n    },\n    \"build\": {\n      \"commands\": [\n        \"ls -l\",\n        \"npm run cdk deploy \\\"*\\\"\"\n      ]\n    }\n  },\n  \"artifacts\": {\n    \"files\": [\n      \"**/*\"\n    ]\n  },\n  \"cache\": {\n    \"paths\": [\n      \"node_modules/**/*\"\n    ]\n  }\n}"
+                        }
+                      }
+                    },
+                    "constructInfo": {
+                      "fqn": "aws-cdk-lib.aws_codebuild.CfnProject",
+                      "version": "2.110.1"
+                    }
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.aws_codebuild.PipelineProject",
+                  "version": "2.110.1"
+                }
+              }
+            },
+            "constructInfo": {
+              "fqn": "constructs.Construct",
+              "version": "10.0.0"
+            }
+          },
+          "CDKMetadata": {
+            "id": "CDKMetadata",
+            "path": "DeploymentPipelineStack/CDKMetadata",
+            "children": {
+              "Default": {
+                "id": "Default",
+                "path": "DeploymentPipelineStack/CDKMetadata/Default",
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.CfnResource",
+                  "version": "2.110.1"
+                }
+              },
+              "Condition": {
+                "id": "Condition",
+                "path": "DeploymentPipelineStack/CDKMetadata/Condition",
+                "constructInfo": {
+                  "fqn": "aws-cdk-lib.CfnCondition",
+                  "version": "2.110.1"
+                }
+              }
+            },
+            "constructInfo": {
+              "fqn": "constructs.Construct",
+              "version": "10.0.0"
+            }
+          },
+          "BootstrapVersion": {
+            "id": "BootstrapVersion",
+            "path": "DeploymentPipelineStack/BootstrapVersion",
+            "constructInfo": {
+              "fqn": "aws-cdk-lib.CfnParameter",
+              "version": "2.110.1"
+            }
+          },
+          "CheckBootstrapVersion": {
+            "id": "CheckBootstrapVersion",
+            "path": "DeploymentPipelineStack/CheckBootstrapVersion",
+            "constructInfo": {
+              "fqn": "aws-cdk-lib.CfnRule",
+              "version": "2.110.1"
+            }
+          }
+        },
+        "constructInfo": {
+          "fqn": "aws-cdk-lib.Stack",
+          "version": "2.110.1"
+        }
+      },
+      "Tree": {
+        "id": "Tree",
+        "path": "Tree",
+        "constructInfo": {
+          "fqn": "constructs.Construct",
+          "version": "10.0.0"
+        }
+      }
+    },
+    "constructInfo": {
+      "fqn": "aws-cdk-lib.App",
+      "version": "2.110.1"
+    }
+  }
+}
