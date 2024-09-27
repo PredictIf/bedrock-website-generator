@@ -16,7 +16,7 @@ const GITHUB_CONNECTION_ARN =
   "arn:aws:codestar-connections:us-east-2:471112680679:connection/6062bf2d-54a8-4b04-89ee-eec48c47e55b";
 
 const SECRET_ARN =
-  "arn:aws:secretsmanager:us-east-1:221082206129:secret:website-generator-oauth-token-2fdCfT";
+  "arn:aws:secretsmanager:us-east-1:221082206129:secret:website-generator-oauth-token-legacy-nmxkM4";
 
 export class DeploymentPipelineStack extends cdk.Stack {
   constructor(scope: Construct, id: string, props?: cdk.StackProps) {
